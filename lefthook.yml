@@ -2,5 +2,5 @@ pre-commit:
   parallel: true
   commands:
     test:
-      glob: "**/*.go"
+      glob: "**/*_test.go"
       run: make test {all_files}
