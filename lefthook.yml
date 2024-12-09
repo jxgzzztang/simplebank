@@ -2,4 +2,5 @@ pre-commit:
   parallel: true
   commands:
     test:
+      glob: "**/*.go"
       run: go test -v ./...
