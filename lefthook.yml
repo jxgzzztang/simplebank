@@ -3,4 +3,4 @@ pre-commit:
   commands:
     test:
       glob: "**/*.go"
-      run: make test
+      run: make test {all_files}
