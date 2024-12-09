@@ -2,6 +2,6 @@ pre-commit:
   parallel: true
   commands:
     test:
-      glob: "*.rb" # glob filter
+      glob: "*.go" # glob filter
       run: go test ./...
 commit-msg:
