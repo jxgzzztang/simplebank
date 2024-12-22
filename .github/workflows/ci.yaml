@@ -35,6 +35,12 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.22.2'
+    - name: install migrate
+      run: |
+        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.1/migrate.darwin-amd64.tar.gz | tar xvz
+        sudo mv migrate /user/bin
+        which migrate
+
     - name: migrate postgres
       run: make migrateup
 
