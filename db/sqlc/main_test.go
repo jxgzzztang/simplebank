@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
-	"github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"os"
 	"testing"
@@ -15,21 +15,20 @@ const (
 
 var testQuery *Queries
 
+var testDB *pgxpool.Pool
+
 func TestMain(m *testing.M) {
 	ctx := context.Background()
+	var err error
 
-	conn, err := pgx.Connect(ctx, dbSource)
+	testDB, err = pgxpool.New(ctx, dbSource)
 	if err != nil {
 		log.Fatal("error opening db:", err)
 	}
-	defer func(conn *pgx.Conn, ctx context.Context) {
-		err := conn.Close(ctx)
-		if err != nil {
 
-		}
-	}(conn, ctx)
+	testQuery = New(testDB)
 
-	testQuery = New(conn)
+	defer testDB.Close()
 
 	os.Exit(m.Run())
 
