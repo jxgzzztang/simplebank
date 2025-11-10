@@ -31,7 +31,7 @@ func TestTransferTx(t *testing.T) {
 		}()
 	}
 
-	exsits := make(map[int]bool)
+	exists := make(map[int]bool)
 	for i := 0; i < n; i++ {
 		err := <-errors
 		require.NoError(t, err)
@@ -75,8 +75,8 @@ func TestTransferTx(t *testing.T) {
 
 		k := int(diff1 / amount)
 		require.True(t, k >= 1 && k <= n)
-		require.NotContains(t, exsits, k)
-		exsits[k] = true
+		require.NotContains(t, exists, k)
+		exists[k] = true
 	}
 
 	updateAccount1, err := testQuery.GetAccount(context.Background(), account1.ID)

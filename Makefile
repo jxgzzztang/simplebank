@@ -10,7 +10,13 @@ migratedown:
 	migrate -path db/migration -database "postgres://root:123456@localhost:5432/simple_bank?sslmode=disable" -verbose down
 sqlc:
 	sqlc generate
+server:
+	go run main.go
 test:
 	go test -v -cover ./...
+swag:
+	$(shell go env GOPATH)/bin/swag init --parseDependency --parseInternal
+mock:
+	mockgen -package mock -destination db/mock/store.go  ./db/sqlc Store
 
-.PHONY: postgres createdb dorpdb migrateup	 migratedown sqlc test
+.PHONY: postgres createdb dorpdb migrateup migratedown sqlc test server mock

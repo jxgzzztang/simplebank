@@ -1,0 +1,254 @@
+definitions:
+  api.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  api.TransferRequest:
+    properties:
+      amount:
+        type: integer
+      currency:
+        type: string
+      from_account_id:
+        type: integer
+      to_account_id:
+        type: integer
+    required:
+    - amount
+    - currency
+    - from_account_id
+    - to_account_id
+    type: object
+  db.Account:
+    properties:
+      balance:
+        type: integer
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      currency:
+        type: string
+      id:
+        type: integer
+      owner:
+        type: string
+    type: object
+  db.Entry:
+    properties:
+      account_id:
+        type: integer
+      amount:
+        description: entries amount is positive or negative
+        type: integer
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+    type: object
+  db.Transfer:
+    properties:
+      amount:
+        description: transfers amount positive
+        type: integer
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      from_account_id:
+        type: integer
+      id:
+        type: integer
+      to_account_id:
+        type: integer
+    type: object
+  db.TransferTxResult:
+    properties:
+      from_account:
+        $ref: '#/definitions/db.Account'
+      from_entry:
+        $ref: '#/definitions/db.Entry'
+      to_account:
+        $ref: '#/definitions/db.Account'
+      to_entry:
+        $ref: '#/definitions/db.Entry'
+      transfer:
+        $ref: '#/definitions/db.Transfer'
+    type: object
+  db.User:
+    properties:
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      email:
+        type: string
+      full_name:
+        type: string
+      hashed_password:
+        type: string
+      password_changed_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      username:
+        type: string
+    type: object
+  pgtype.InfinityModifier:
+    enum:
+    - 1
+    - 0
+    - -1
+    format: int32
+    type: integer
+    x-enum-varnames:
+    - Infinity
+    - Finite
+    - NegativeInfinity
+  pgtype.Timestamptz:
+    properties:
+      infinityModifier:
+        $ref: '#/definitions/pgtype.InfinityModifier'
+      time:
+        type: string
+      valid:
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /createAccount:
+    post:
+      consumes:
+      - application/json
+      description: create a account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: CreateAccount
+      tags:
+      - accounts
+  /createAccount/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get a account
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: GetAccount
+      tags:
+      - accounts
+  /createUser:
+    post:
+      consumes:
+      - application/json
+      description: create a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: CreateUser
+      tags:
+      - accounts
+  /listAccounts:
+    get:
+      consumes:
+      - application/json
+      description: get a accounts list
+      parameters:
+      - description: page size
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: page number
+        in: query
+        name: pageNumber
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Account'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: ListAccounts
+      tags:
+      - accounts
+  /transfer:
+    post:
+      consumes:
+      - application/json
+      description: transfer
+      parameters:
+      - description: 参数
+        in: body
+        name: transferData
+        required: true
+        schema:
+          $ref: '#/definitions/api.TransferRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.TransferTxResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Transfer
+      tags:
+      - accounts
+swagger: "2.0"

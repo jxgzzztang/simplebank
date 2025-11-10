@@ -4,8 +4,8 @@ INSERT INTO accounts (
     balance,
     currency
 ) VALUES (
-    $1, $2, $3
-) RETURNING *;
+             $1, $2, $3
+         ) RETURNING *;
 
 -- name: GetAccount :one
 SELECT * FROM accounts
@@ -18,36 +18,24 @@ FOR NO KEY UPDATE;
 
 -- name: ListAccount :many
 SELECT * FROM accounts
+WHERE owner = $1
 ORDER BY id
-LIMIT $1
-OFFSET $2;
+    LIMIT $2
+OFFSET $3;
 
 -- name: UpdateAccount :one
 UPDATE accounts
 SET balance = $2
 WHERE id = $1
-RETURNING *;
+    RETURNING *;
 
 -- name: AddAccountBalance :one
 UPDATE accounts
 SET balance = balance + sqlc.arg(amount)
 WHERE id = sqlc.arg(id)
-RETURNING *;
+    RETURNING *;
 
 
 -- name: DeleteAccount :exec
 DELETE FROM accounts
 WHERE id = $1;
-
--- name: CreateTransfer :one
-INSERT INTO transfers (
-    from_account_id,
-    to_account_id,
-    amount
-) VALUES ($1, $2, $3) RETURNING *;
-
--- name: CreateEntry :one
-INSERT INTO entries (
-    account_id,
-    amount
-) VALUES ($1, $2) RETURNING *;

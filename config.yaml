@@ -1,0 +1,7 @@
+dbSource: postgres://root:123456@localhost:5432/simple_bank?sslmode=disable
+port: :8080
+jwt:
+  SECRET_KEY: asdflkjasdklfjaksdljflkasdjfklasdf
+  EXPIRE_TIME: 15m
+  REFRESH_DURATION: 24h
+  ISSUER: github.com/jxgzzztang/simplebank

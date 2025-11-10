@@ -9,26 +9,46 @@ import (
 )
 
 type Account struct {
-	ID        int64
-	Owner     string
-	Balance   int64
-	Currency  string
-	CreatedAt pgtype.Timestamptz
+	ID        int64              `json:"id"`
+	Owner     string             `json:"owner"`
+	Balance   int64              `json:"balance"`
+	Currency  string             `json:"currency"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 type Entry struct {
-	ID        int64
-	AccountID int64
-	// entries amount is positive or negtive
-	Amount    int64
-	CreatedAt pgtype.Timestamptz
+	ID        int64 `json:"id"`
+	AccountID int64 `json:"account_id"`
+	// entries amount is positive or negative
+	Amount    int64              `json:"amount"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+type Session struct {
+	ID           pgtype.UUID        `json:"id"`
+	Username     string             `json:"username"`
+	RefreshToken string             `json:"refresh_token"`
+	ClientIp     string             `json:"client_ip"`
+	UserAgent    string             `json:"user_agent"`
+	IsBlocked    bool               `json:"is_blocked"`
+	ExpiresAt    pgtype.Timestamptz `json:"expires_at"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 }
 
 type Transfer struct {
-	ID            int64
-	FromAccountID int64
-	ToAccountID   int64
-	// transters amount positive
-	Amount    int64
-	CreatedAt pgtype.Timestamptz
+	ID            int64 `json:"id"`
+	FromAccountID int64 `json:"from_account_id"`
+	ToAccountID   int64 `json:"to_account_id"`
+	// transfers amount positive
+	Amount    int64              `json:"amount"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+type User struct {
+	Username          string             `json:"username"`
+	HashedPassword    string             `json:"hashed_password"`
+	FullName          string             `json:"full_name"`
+	Email             string             `json:"email"`
+	PasswordChangedAt pgtype.Timestamptz `json:"password_changed_at"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
 }
